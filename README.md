@@ -3,7 +3,7 @@
 # Automated Rodent Water Delivery System
 
 This project provides an autonomous, Arduino-based solution for delivering controlled amounts of water to rodents at specific intervals. It is designed for laboratory or home-care environments where a computer connection is not available after setup.
-<img width="963" height="1280" alt="WhatsApp Image 2026-08-31 at 12 38 45" src="https://github.com/user-attachments/assets/bc85b6d3-e8da-48b4-a8d3-db2e4a77e178" />
+<img width="700" height="1000" alt="WhatsApp Image 2026-08-31 at 12 38 45" src="https://github.com/user-attachments/assets/bc85b6d3-e8da-48b4-a8d3-db2e4a77e178" />
 
 ## Features
 - **Standalone Operation:** Runs on a 12V power supply without a PC.
@@ -19,7 +19,7 @@ This project provides an autonomous, Arduino-based solution for delivering contr
 - **Protection:** 1N4007 Diode (Flyback diode for the pump).
 - **Inputs:** 1x Toggle Switch (Automatic mode), 1x Momentary Push-button (Manual delivery).
 - **Delivery:** Check the PrintableWaterDelivery.3mf file. I glued it tu a tupper with a screw and a needle as seen in the image.
-  <img width="963" height="1280" alt="WhatsApp Image 2026-08-31 at 12 38 45 (1)" src="https://github.com/user-attachments/assets/4946f361-fed7-4ca4-93fb-546a2569782b" />
+  <img width="700" height="600" alt="WhatsApp Image 2026-08-31 at 12 38 45 (1)" src="https://github.com/user-attachments/assets/4946f361-fed7-4ca4-93fb-546a2569782b" />
 
 
 ## Wiring Diagram
