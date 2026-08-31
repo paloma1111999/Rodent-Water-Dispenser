@@ -19,6 +19,7 @@ This project provides an autonomous, Arduino-based solution for delivering contr
 - **Inputs:** 1x Toggle Switch (Automatic mode), 1x Momentary Push-button (Manual delivery).
 
 ## Wiring Diagram
+I used this diagram: https://forum.arduino.cc/t/how-to-control-a-motor-with-external-power/357324
 ### Power
 - **12V (+)** -> Arduino `VIN` pin AND Pump (+) terminal.
 - **12V (-)** -> Arduino `GND` pin AND MOSFET `Source`.
@@ -31,6 +32,7 @@ This project provides an autonomous, Arduino-based solution for delivering contr
 ### Pump/Solenoid
 - **Pump (-)** -> MOSFET `Drain`.
 - **Flyback Diode:** Place across the pump terminals (Anode to Negative, Cathode/Striped end to Positive).
+- I used this one: https://www.harfington.com/products/p-1035329?srsltid=AfmBOoq4zBB5QLnGf7daASw75qGxCNdbWW8ioFcCodandrWTnTUKmcIR
 
 ## Installation
 1. Clone this repository.
