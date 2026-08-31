@@ -1,68 +1,70 @@
 /*
- * SISTEMA DE AGUA PARA ROEDORES - VERSIÓN FINAL
- * Botón manual (Pin 3) -> Funciona siempre.
- * Switch (Pin 2) -> Activa/Desactiva el ciclo automático de 24hs.
+ * AUTOMATED RODENT WATER DISPENSER
+ * 
+ * Logic:
+ * - Manual Button (Pin 3): Always active. Dispenses water for the set duration.
+ * - Master Switch (Pin 2): When ON (LOW), starts the countdown for the 24h cycle.
  */
 
-// --- CONFIGURACIÓN DE USUARIO ---
-const unsigned long INTERVALO_HORAS = 24;          
-const unsigned long DURACION_BOMBA_MS = 1000; // Ajustar según calibración (1000ms = 1ml aprox)
+// --- USER CONFIGURATION ---
+const unsigned long INTERVAL_HOURS = 24;          
+const unsigned long PUMP_DURATION_MS = 1000; // Calibrate this to reach desired volume (e.g., 1ml)
 
-// --- PINES ---
-const uint8_t pinBomba = 7;       // A la compuerta (Gate) del MOSFET
-const uint8_t pinSwitch = 2;      // Al interruptor de ciclo (Pata A a Pin 2, Pata B a GND)
-const uint8_t pinBotonManual = 3; // Al pulsador manual (Pata A a Pin 3, Pata B a GND)
+// --- PIN DEFINITIONS ---
+const uint8_t pinPump = 7;        // To MOSFET Gate or Relay
+const uint8_t pinSwitch = 2;      // To Toggle Switch (Pin 2 to GND)
+const uint8_t pinManualBtn = 3;   // To Push Button (Pin 3 to GND)
 
-// --- VARIABLES INTERNAS ---
-const unsigned long msPorHora = 3600000; 
-unsigned long intervaloMs = INTERVALO_HORAS * msPorHora;
-unsigned long tiempoUltimaActivacion = 0;
-bool sistemaActivo = false;
+// --- INTERNAL VARIABLES ---
+const unsigned long msPerHour = 3600000; 
+unsigned long intervalMs = INTERVAL_HOURS * msPerHour;
+unsigned long lastActivationTime = 0;
+bool systemActive = false;
 
 void setup() {
-  pinMode(pinBomba, OUTPUT);
-  digitalWrite(pinBomba, LOW); // Asegurar bomba apagada al inicio
+  pinMode(pinPump, OUTPUT);
+  digitalWrite(pinPump, LOW); // Ensure pump is OFF on startup
   
-  // Activamos resistencias internas para que los botones no necesiten resistencias externas
+  // Internal Pull-ups remove the need for external resistors
   pinMode(pinSwitch, INPUT_PULLUP);
-  pinMode(pinBotonManual, INPUT_PULLUP);
+  pinMode(pinManualBtn, INPUT_PULLUP);
 }
 
 void loop() {
   
-  // --- 1. ENTREGA MANUAL (Siempre disponible) ---
-  // Si el pulsador une el Pin 3 con GND, leemos LOW
-  if (digitalRead(pinBotonManual) == LOW) {
-    entregarAgua();
-    delay(200); // Pequeño rebote para no activar dos veces por error
+  // --- 1. MANUAL OVERRIDE ---
+  // Works regardless of the master switch state.
+  if (digitalRead(pinManualBtn) == LOW) {
+    dispenseWater();
+    delay(200); // Debounce delay
   }
 
-  // --- 2. SISTEMA AUTOMÁTICO (Depende del Switch) ---
+  // --- 2. AUTOMATIC SYSTEM ---
   if (digitalRead(pinSwitch) == LOW) {
     
-    // Si el switch acaba de ser encendido
-    if (!sistemaActivo) {
-      sistemaActivo = true;
-      tiempoUltimaActivacion = millis(); // Empezar a contar desde este momento
+    // If the switch was just turned ON
+    if (!systemActive) {
+      systemActive = true;
+      lastActivationTime = millis(); // Start counting from this moment
     }
 
-    unsigned long tiempoActual = millis();
+    unsigned long currentTime = millis();
     
-    // Si transcurrió el tiempo configurado
-    if (tiempoActual - tiempoUltimaActivacion >= intervaloMs) {
-      entregarAgua();
-      tiempoUltimaActivacion = tiempoActual; // Reiniciar el reloj para las próximas 24hs
+    // Check if the interval has passed
+    if (currentTime - lastActivationTime >= intervalMs) {
+      dispenseWater();
+      lastActivationTime = currentTime; // Reset the cycle timer
     }
 
   } else {
-    // Si el switch está en OFF, el cronómetro se resetea
-    sistemaActivo = false;
+    // If the switch is OFF, the automatic timer is reset
+    systemActive = false;
   }
 }
 
-// Función estandarizada para activar la bomba
-void entregarAgua() {
-  digitalWrite(pinBomba, HIGH);
-  delay(DURACION_BOMBA_MS); 
-  digitalWrite(pinBomba, LOW);
+// Function to activate the pump
+void dispenseWater() {
+  digitalWrite(pinPump, HIGH);
+  delay(PUMP_DURATION_MS); 
+  digitalWrite(pinPump, LOW);
 }
